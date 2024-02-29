@@ -1,8 +1,9 @@
 /// <reference types="cypress"/>
+    const perfil = require('../../fixtures/perfil.json')
 
 describe ('funcionalidade: login', () => {
     beforeEach(() => {
-        cy.visit ('http://lojaebac.ebaconline.art.br/minha-conta/')
+        cy.visit ('minha-conta')
     });
     afterEach(() => {
         cy.screenshot()
@@ -27,4 +28,19 @@ describe ('funcionalidade: login', () => {
             cy.get('.woocommerce-form > .button').click()
             cy.get('.woocommerce-error').should ('contain','Erro: A senha fornecida para o e-mail rafael.teste@teste.com.br está incorreta. Perdeu a senha?')
         });
-    })
+        it('Deve fazer login com sucesso - usando massa de dados', () => {
+        cy.get('.woocommerce-form > :nth-child(1) > label') .type(perfil.usuario)
+        cy.get('#password').type(perfil.senha)
+        cy.get('.woocommerce-form > .button').click()
+        cy.get('.woocommerce-MyAccount-content > :nth-child(2)').should ('contain' , 'Olá, rafael.teste (não é rafael.teste? Sair)')
+        });
+        it('Deve fazer login com sucesso - usando fixture', () => {
+            cy.fixture('perfil').then(dados =>{
+                cy.get('.woocommerce-form > :nth-child(1) > label') .type(perfil.usuario)
+                cy.get('#password').type(perfil.senha)
+                cy.get('.woocommerce-form > .button').click()
+                cy.get('.woocommerce-MyAccount-content > :nth-child(2)').should ('contain' , 'Olá, rafael.teste (não é rafael.teste? Sair)')
+            })
+            
+           })
+        }); 
